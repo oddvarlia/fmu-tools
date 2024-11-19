@@ -79,6 +79,7 @@ ensemble_well_props = "fmu.tools.ensembles.ensemble_well_props:main"
 fmudesign = "fmu.tools.sensitivities.fmudesignrunner:main"
 rename_rms_scripts = "fmu.tools.rms.rename_rms_scripts:main"
 rmsvolumetrics2csv = "fmu.tools.rms.volumetrics:rmsvolumetrics2csv_main"
+generate_petro_jobs_for_field_update = "fmu.tools.rms.generate_petro_jobs_for_field_update:main"
 
 [tool.ruff]
 line-length = 88
