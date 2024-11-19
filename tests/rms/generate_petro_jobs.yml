@@ -1,0 +1,35 @@
+# Name of grid model for the petrophysics jobs
+grid_name: "SingleZoneGrid"
+
+# Name of original petro job using facies realization as input
+original_job_name: "std_valysar"
+
+# Use empty string as zone name for single zone grids and zone name for multizone grids.
+# For each zone, specify facies and for each facies specify
+# petro variables to be used as field parameters in ERT update
+used_petro_var:
+"": 
+  Floodplain: ["PHIT", "KLOGH"]
+  Channel: ["PHIT", "KLOGH"]
+  Crevasse: ["PHIT", "KLOGH"]
+
+# Example for a multizone grid with three zones:
+#used_petro_var:
+#  Valysar: 
+#    Floodplain: ["phit", "klogh"]
+#    Channel: ["phit", "klogh"]
+#    Crevasse: ["phit", "klogh"]
+#  Therys:
+#    Offshore: ["phit", "klogh"]
+#    Lowershoreface: ["phit", "klogh"]
+#    Uppershoreface: ["phit", "klogh"]
+#    Calcite: ["phit"]
+#  Volon:
+#    Floodplain: ["phit", "klogh"]
+#    Channel: ["phit", "klogh"]
+#    Calcite: ["phit"]
+
+
+
+
+
