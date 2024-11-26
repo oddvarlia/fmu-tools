@@ -5,11 +5,14 @@ import warnings
 import yaml
 
 try:
-    import rmsapi  # type: ignore
-    import rmsapi.jobs  # type: ignore
+    import _roxar  # type: ignore
 except ModuleNotFoundError:
-    warnings.warn("This script only supports interactive RMS usage", UserWarning)
-
+    try:
+        import _rmsapi as _roxar  # type: ignore
+        import roxar.jobs  # type: ignore
+    except ModuleNotFoundError:
+        warnings.warn("This script only supports interactive RMS usage", UserWarning)
+from typing import no_type_check
 
 # User defined global variables
 DEBUG_PRINT = False
@@ -26,6 +29,12 @@ PP = pprint.PrettyPrinter(depth=7)
 def main():
     spec_dict = read_specification_file(CONFIG_FILE)
     create_new_petro_job_per_facies(spec_dict)
+
+
+@no_type_check
+def check_rms_project(project):
+    if not isinstance(project, _roxar.Project):  # type: ignore
+        raise RuntimeError("This run must be ran in an RoxAPI environment!")
 
 
 def read_specification_file(config_file_name):
@@ -83,14 +92,14 @@ def sort_new_var_names(original_variable_names, variable_names_to_keep):
 
 
 def get_original_job_settings(owner_string_list, job_type, job_name):
-    original_job = rmsapi.jobs.Job.get_job(owner_string_list, job_type, job_name)
+    original_job = roxar.jobs.Job.get_job(owner_string_list, job_type, job_name)
     return original_job.get_arguments(skip_defaults=False)
 
 
 def create_copy_of_job(
     owner_string_list, job_type, original_job_arguments, new_job_name
 ):
-    new_job = rmsapi.jobs.Job.create(owner_string_list, job_type, new_job_name)
+    new_job = roxar.jobs.Job.create(owner_string_list, job_type, new_job_name)
     new_job.set_arguments(original_job_arguments)
     return new_job
 
@@ -286,7 +295,7 @@ def create_new_petro_job_per_facies(spec_dict):
         new_job = create_copy_of_job(
             owner_string_list, JOB_TYPE, new_job_arguments_current, new_job_name
         )
-        ok, err_msg_list, warn_msg_list = rmsapi.jobs.Job.check(new_job)
+        ok, err_msg_list, warn_msg_list = roxar.jobs.Job.check(new_job)
         if not ok:
             print("Error messages from created job object:")
             for err_msg in err_msg_list:
@@ -303,7 +312,7 @@ def create_new_petro_job_per_facies(spec_dict):
 
 
 def write_petro_job_to_file(owner_string_list, job_type, job_name):
-    job_instance = rmsapi.jobs.Job.get_job(
+    job_instance = roxar.jobs.Job.get_job(
         owner=owner_string_list, type=job_type, name=job_name
     )
     arguments = job_instance.get_arguments(True)
@@ -316,4 +325,5 @@ def write_petro_job_to_file(owner_string_list, job_type, job_name):
 
 
 if __name__ == "__main__":
+    check_rms_project(project)  # noqa
     main()

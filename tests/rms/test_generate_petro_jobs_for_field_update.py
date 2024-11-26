@@ -21,8 +21,8 @@ import pytest
 import xtgeo
 
 with contextlib.suppress(ImportError):
-    import rmsapi  # type: ignore
-    import rmsapi.jobs  # type: ignore
+    import roxar  # type: ignore
+    import roxar.jobs  # type: ignore
 
 from fmu.tools.rms.generate_petro_jobs_for_field_update import (
     create_new_petro_job_per_facies,
@@ -141,10 +141,10 @@ def create_original_petro_job(spec_dict):
     grid_name = spec_dict["grid_name"]
     owner_string_list = ["Grid models", grid_name, "Grid"]
     job_name = spec_dict["original_job_name"]
-    petro_job = rmsapi.jobs.Job.create(
+    petro_job = roxar.jobs.Job.create(
         owner=owner_string_list, type=JOB_TYPE, name=job_name
     )
-    rmsapi.jobs.Job.license_checkout(job_types=[JOB_TYPE])
+    roxar.jobs.Job.license_checkout(job_types=[JOB_TYPE])
     job_arguments = define_setting_for_original_job(spec_dict)
     petro_job.set_arguments(job_arguments)
     checked_ok, err_msg_list, warn_msg_list = petro_job.check(job_arguments)
@@ -255,7 +255,7 @@ def define_setting_for_original_job(spec_dict):
 
 
 def write_petro_job_to_file(owner_string_list, job_type, job_name, filename):
-    job_instance = rmsapi.jobs.Job.get_job(
+    job_instance = roxar.jobs.Job.get_job(
         owner=owner_string_list, type=job_type, name=job_name
     )
     arguments = job_instance.get_arguments(True)
@@ -283,7 +283,7 @@ def fixture_create_project():
         print("Remove existing project! (1)")
         shutil.rmtree(prj1)
 
-    project = rmsapi.Project.create()
+    project = roxar.Project.create()
 
     rox = xtgeo.RoxUtils(project)
     print("Roxar version is", rox.roxversion)
