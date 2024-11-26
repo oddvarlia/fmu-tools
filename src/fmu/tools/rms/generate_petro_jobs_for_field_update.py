@@ -1,9 +1,15 @@
 import copy
 import pprint
+import warnings
 
-import rmsapi  # type: ignore
-import rmsapi.jobs  # type: ignore
 import yaml
+
+try:
+    import rmsapi  # type: ignore
+    import rmsapi.jobs  # type: ignore
+except ModuleNotFoundError:
+    warnings.warn("This script only supports interactive RMS usage", UserWarning)
+
 
 # User defined global variables
 DEBUG_PRINT = False
