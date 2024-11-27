@@ -10,11 +10,11 @@ original_job_name: "original_multi_zone"
 
 # Example for a multizone grid with three zones:
 used_petro_var:
-  ZoneA: 
+  Zone1: 
     F1: ["P1", "P2"]
     F2: ["P1", "P2"]
     F3: ["P1", "P2"]
-  ZoneB:
+  Zone2:
     F1:  ["P1", "P2"]
     F2:  ["P1", "P2"]
     F3:  ["P1", "P2"]

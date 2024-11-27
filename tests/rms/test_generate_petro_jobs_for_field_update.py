@@ -36,7 +36,7 @@ from fmu.tools.rms.generate_petro_jobs_for_field_update import (
 TMPD = Path("TMP")
 TMPD.mkdir(parents=True, exist_ok=True)
 
-TPATH = Path("generate_jobs_testdata")
+TPATH = Path("rms/generate_jobs_testdata")
 PROJNAME = "tmp_project_generate_petro_jobs.rmsxxx"
 
 PRJ = str(TMPD / PROJNAME)
@@ -245,8 +245,7 @@ def define_setting_for_original_job(spec_dict):
 
     return {
         "Algorithm": "SIMULATION",
-        "BlockedWells": ["Grid models", grid_name, "BW"],
-        "ConditionOnBlockedWells": True,
+        "ConditionOnBlockedWells": False,
         "InputFaciesProperty": ["Grid models", grid_name, facies_real_name],
         "VariableNames": common_petro_list,
         "Zone Models": zone_model_list,
@@ -270,8 +269,8 @@ def write_petro_job_to_file(owner_string_list, job_type, job_name, filename):
 # Here the temporary RMS project is created. It contains a grid,
 # a facies parameter and an original petrophysical job
 @pytest.mark.skipunlessroxar
-@pytest.fixture(name="create_project", scope="module", autouse=True)
-def fixture_create_project():
+@pytest.fixture
+def create_project():
     """Create a tmp RMS project for testing, populate with basic data.
 
     After the yield command, the teardown phase will remove the tmp RMS project.
@@ -342,32 +341,33 @@ def fixture_create_project():
 # as the original petro job for the
 # petrophysical properties.
 @pytest.mark.skipunlessroxar
-def test_generate_jobs():
+def test_generate_jobs(create_project):
     """Test generate_petro_jobs_for_field_update"""
+    with create_project as project:
 
-    # Now run script to generate one petro job per facies for single zone grid
-    spec_case = read_specification_file(CONFIG_FILE_SINGLE_ZONE)
-    job_name_list = create_new_petro_job_per_facies(spec_case)
-    for n, job_name in enumerate(job_name_list):
-        filename = job_name + ".txt"
-        reference_filename = REFERENCE_DIR / REFERENCE_FILES_SINGLE_ZONE_GRID[n]
-        write_petro_job_to_file(OWNER_STRING_SINGLE_ZONE, JOB_TYPE, job_name, filename)
+        # Now run script to generate one petro job per facies for single zone grid
+        spec_case = read_specification_file(CONFIG_FILE_SINGLE_ZONE)
+        job_name_list = create_new_petro_job_per_facies(spec_case)
+        for n, job_name in enumerate(job_name_list):
+            filename = job_name + ".txt"
+            reference_filename = REFERENCE_DIR / REFERENCE_FILES_SINGLE_ZONE_GRID[n]
+            write_petro_job_to_file(OWNER_STRING_SINGLE_ZONE, JOB_TYPE, job_name, filename)
 
-    # Compare text files with job parameters with reference for single zone jobs
-    check = filecmp.cmp(filename, reference_filename)
-    if check:
-        print("Check OK for single zone grid")
-    assert check
+        # Compare text files with job parameters with reference for single zone jobs
+        check = filecmp.cmp(filename, reference_filename)
+        if check:
+            print("Check OK for single zone grid")
+        assert check
 
-    # Now run script to generate one petro job per facies for single zone grid
-    spec_case = read_specification_file(CONFIG_FILE_MULTI_ZONE)
-    job_name_list = create_new_petro_job_per_facies(spec_case)
-    for n, job_name in enumerate(job_name_list):
-        filename = job_name + ".txt"
-        reference_filename = REFERENCE_DIR / REFERENCE_FILES_MULTI_ZONE_GRID[n]
-        write_petro_job_to_file(OWNER_STRING_MULTI_ZONE, JOB_TYPE, job_name, filename)
+        # Now run script to generate one petro job per facies for single zone grid
+        spec_case = read_specification_file(CONFIG_FILE_MULTI_ZONE)
+        job_name_list = create_new_petro_job_per_facies(spec_case)
+        for n, job_name in enumerate(job_name_list):
+            filename = job_name + ".txt"
+            reference_filename = REFERENCE_DIR / REFERENCE_FILES_MULTI_ZONE_GRID[n]
+            write_petro_job_to_file(OWNER_STRING_MULTI_ZONE, JOB_TYPE, job_name, filename)
 
-    # Compare text files with job parameters with reference for single zone jobs
-    if check:
-        print("Check OK for multi zone grid")
-    assert check
+        # Compare text files with job parameters with reference for single zone jobs
+        if check:
+            print("Check OK for multi zone grid")
+        assert check
