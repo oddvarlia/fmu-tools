@@ -66,7 +66,7 @@ def main(
     )
     facies_real_name = petro_job_param["InputFaciesProperty"]
 
-    update_petro_real(
+    combine_petro_real_from_multiple_facies(
         project,
         grid_name,
         facies_real_name,
@@ -78,7 +78,7 @@ def main(
     )
 
 
-def update_petro_real(
+def combine_petro_real_from_multiple_facies(
     project,
     grid_name: str,
     facies_real_name: str,
