@@ -3,6 +3,7 @@ Merge petrophysical realizations created individually per facies
 into one realization using facies realization as filter
 """
 
+from pathlib import Path
 from typing import Dict, List
 
 import xtgeo
@@ -125,6 +126,7 @@ def import_updated_field_parameters(
     used_petro_dict: Dict,
     grid_model_name: str = "ERTBOX",
     zone_name_for_single_zone_grid: str = "",
+    import_path: str = ".",
     debug_print: bool = False,
 ) -> None:
     """Import ROFF files with field parameters updated by ERT.
@@ -163,7 +165,7 @@ def import_updated_field_parameters(
                 if debug_print:
                     print(f"Petro variable:  {petro_name}")
                 property_name = zone_name + "_" + fname + "_" + petro_name
-                file_name = "../../" + property_name + ".roff"
+                file_name = Path(import_path) / Path(property_name + ".roff")
                 print(f"Import file: {file_name} into {grid_model_name}")
                 xtgeo_prop = xtgeo.gridproperty_from_file(
                     file_name, fformat="roff", name=property_name
@@ -176,6 +178,7 @@ def export_initial_field_parameters(
     used_petro_dict: Dict,
     grid_model_name: str = "ERTBOX",
     zone_name_for_single_zone_grid: str = "",
+    export_path: str = ".",
     debug_print: bool = False,
 ) -> None:
     """Export ROFF files with field parameters simulated by RMS to files to be
@@ -217,7 +220,7 @@ def export_initial_field_parameters(
                 if debug_print:
                     print(f"Petro variable:  {petro_name}")
                 property_name = zone_name + "_" + fname + "_" + petro_name
-                file_name = "../../rms/output/aps/" + property_name + ".roff"
+                file_name = Path(export_path) / Path(property_name + ".roff")
                 print(f"Export file: {file_name} into {grid_model_name}")
                 xtgeo_prop = xtgeo.gridproperty_from_roxar(
                     project, grid_model_name, property_name
